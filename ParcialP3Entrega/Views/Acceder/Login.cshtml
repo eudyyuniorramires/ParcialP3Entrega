@@ -1,0 +1,98 @@
+﻿<div class="d-flex align-items-center justify-content-center vh-100 bg-gradient-primary">
+    <div class="card shadow-lg border-0 rounded-5" style="width: 400px;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+                <h3 class="fw-bold mt-3 text-dark">Iniciar Sesión</h3>
+                <p class="text-muted mb-0">Bienvenido, por favor ingrese sus credenciales</p>
+            </div>
+
+            <form id="frmAcceder" class="mt-4">
+                <div class="mb-3">
+                    <label for="_usuario" class="form-label fw-semibold">Usuario</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-person-fill text-secondary"></i>
+                        </span>
+                        <input type="text" id="_usuario" name="_usuario" class="form-control border-0 shadow-sm"
+                               placeholder="Ingrese su usuario" required />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="_password" class="form-label fw-semibold">Contraseña</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-lock-fill text-secondary"></i>
+                        </span>
+                        <input type="password" id="_password" name="_password" class="form-control border-0 shadow-sm"
+                               placeholder="Ingrese su contraseña" required />
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-4 fw-semibold shadow-sm">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Entrar
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <small class="text-muted">¿Olvidó su contraseña? <a href="#" class="text-primary text-decoration-none">Recupérala aquí</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#frmAcceder").submit(function (e) {
+                e.preventDefault();
+
+                const url = "@Url.Content("~/Acceder/Enter")";
+                const parametros = $(this).serialize();
+
+                $.post(url, parametros, function (data) {
+                    if (data === "1") {
+                        window.location.href = "@Url.Content("~/")";
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Acceso denegado',
+                            text: data,
+                            confirmButtonColor: '#0d6efd'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    /* Fondo degradado profesional */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+    }
+
+    /* Animación sutil al aparecer */
+    .card {
+        animation: fadeInUp 0.8s ease;
+    }
+
+   
+
+    /* Campos suaves al enfoque */
+    .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        border-color: #86b7fe;
+    }
+
+    /* Botón con efecto hover */
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+</style>

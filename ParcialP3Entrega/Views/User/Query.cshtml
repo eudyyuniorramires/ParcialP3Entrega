@@ -1,0 +1,93 @@
+﻿@model List<ParcialP3Entrega.Models.ViewModels.QueryViewModels>
+
+@{
+    ViewBag.Title = "Consulta Usuario";
+    Layout = "~/views/shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Consulta de Usuarios</h2>
+        <div>
+            <a href="@Url.Content("~/User/Add")" class="btn btn-primary btn-lg me-2">
+                <i class="bi bi-plus-circle me-1"></i> Nuevo
+            </a>
+            <a href="@Url.Content("~/User/Add")" class="btn btn-secondary btn-lg">
+                <i class="bi bi-arrow-left-circle me-1"></i> Volver Atrás
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded-4">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Correo</th>
+                    <th>Edad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var objs in Model)
+                {
+                    <tr>
+                        <td>@objs._Id</td>
+                        <td>@objs._Email</td>
+                        <td>@objs._Edad</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm me-2" onclick="jsBorrarRegistro(@objs._Id)">
+                                <i class="bi bi-trash me-1"></i> Borrar
+                            </button>
+                            <button class="btn btn-primary btn-sm"
+                                    onclick="document.location.href='@Url.Action("Edit", "User", new { _Id = objs._Id })'">
+                                <i class="bi bi-pencil-square me-1"></i> Editar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function jsBorrarRegistro(ID) {
+        if (confirm("¿Está seguro que desea eliminar este registro?")) {
+            const url = "@Url.Content("~/User/BorrarRegistro")/" + ID;
+            $.post(url, function (data) {
+                if (data == "1") {
+                    window.location.href = "@Url.Content("~/User/Query")";
+                } else {
+                    alert("El registro no fue borrado.");
+                }
+            });
+        }
+    }
+</script>
+
+@section scripts {
+    <script>
+        console.log("Sección scripts renderizada.");
+    </script>
+}
+
+<style>
+    /* Hover en filas */
+    table tbody tr:hover {
+        background-color: #f2f2f2;
+        transition: 0.2s;
+    }
+
+    /* Bordes redondeados en tabla */
+    table {
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    /* Botones con animación */
+    .btn-danger:hover, .btn-primary:hover {
+        transform: translateY(-2px);
+        transition: all 0.2s ease-in-out;
+    }
+</style>

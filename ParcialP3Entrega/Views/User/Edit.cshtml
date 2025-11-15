@@ -1,0 +1,92 @@
+﻿@model ParcialP3Entrega.Models.ViewModels.EditUserViewModels
+
+<div class="d-flex align-items-center justify-content-center vh-100" style="background-color: #ffffff;">
+    <div class="card shadow-lg border-0 rounded-5" style="width: 500px;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-gear text-primary" style="font-size: 3.5rem;"></i>
+                <h2 class="fw-bold text-dark mt-3">Editar Usuario</h2>
+                <p class="text-muted">Modifique los datos y guarde los cambios</p>
+            </div>
+
+            @using (Html.BeginForm("Edit", "User", FormMethod.Post))
+            {
+                @Html.HiddenFor(m => m._Id)
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-person-fill me-2 text-primary"></i>Nombre
+                    </label>
+                    @Html.TextBoxFor(m => m._Nombre, new { @class = "form-control form-control-lg shadow-sm", placeholder = "Ingrese el nombre completo" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-envelope-fill me-2 text-primary"></i>Correo
+                    </label>
+                    @Html.TextBoxFor(m => m._Correo, new { @class = "form-control form-control-lg shadow-sm", placeholder = "correo@ejemplo.com", type = "email" })
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-calendar3 me-2 text-primary"></i>Edad
+                    </label>
+                    @Html.TextBoxFor(m => m._Edad, new { @class = "form-control form-control-lg shadow-sm", placeholder = "Ingrese la edad", type = "number", min = "1" })
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-lock-fill me-2 text-primary"></i>Clave
+                    </label>
+                    @Html.PasswordFor(m => m._Clave, new { @class = "form-control form-control-lg shadow-sm", placeholder = "Ingrese la nueva contraseña" })
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <input type="submit"
+                           value="Volver Atras"
+                           class="btn btn-info btn-lg"
+                           onclick="document.location.href = '@Url.Content("~/User/Query")'" />
+
+                    <button type="submit" class="btn btn-success btn-lg rounded-4 px-5 fw-semibold shadow-sm">
+                        <i class="bi bi-save me-2"></i>Guardar
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("form").on("submit", function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Guardando cambios...',
+                    text: 'Por favor espere',
+                    showConfirmButton: false,
+                    timer: 1200
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    /* Animación de entrada */
+    .card {
+        animation: fadeInUp 0.8s ease;
+    }
+    /* Campos enfocados */
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        transition: 0.2s;
+    }
+
+    /* Botones animados */
+    .btn-success:hover, .btn-outline-secondary:hover {
+        transform: translateY(-2px);
+        transition: 0.2s ease-in-out;
+    }
+</style>
