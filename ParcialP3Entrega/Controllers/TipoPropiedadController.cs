@@ -1,5 +1,9 @@
-﻿using ParcialP3Entrega.Models.ViewModels;
+﻿using ParcialP3Entrega.Clases;
+using ParcialP3Entrega.Models.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.Mvc;
 
 namespace ParcialP3Entrega.Controllers
@@ -28,21 +32,21 @@ namespace ParcialP3Entrega.Controllers
             return Json(new { respuesta = respuesta}, JsonRequestBehavior.AllowGet);
         }
 
-        [HttPost]
+        [HttpPost]
         public bool Eliminar(int id)
         {
             bool respuesta = true;
-            using (SqlConnection cxn = new SqlConnection(cn.db)) 
+            using (SqlConnection cxn = new SqlConnection(cnn.db)) 
             {
                 cxn.Open();
                 try 
                 {
                     SqlCommand cmd = new SqlCommand("sp_EliminarTipoPropiedad", cxn);
-                    cmd.parameters.AddWithValue("@IdTipoPropiedad", id);
-                    cmd.parameters.AddWithValue("Estatus", false);
+                    cmd.Parameters.AddWithValue("@IdTipoPropiedad", id);
+                    cmd.Parameters.AddWithValue("Estatus", false);
 
-                    cmd.parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.commandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
                 }
                 catch (Exception ex) 

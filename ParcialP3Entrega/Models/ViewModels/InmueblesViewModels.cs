@@ -39,7 +39,12 @@ namespace ParcialP3Entrega.Models.ViewModels
         public double Precio { get; set; }
 
         [Required]
-        public int Habitaciones { get; set; }
+        public int Habitacion { get; set; }
+
+
+        [Required]
+        public int Bathroom { get; set; }
+
 
         [Required]
         public int Bathrooms { get; set; }
