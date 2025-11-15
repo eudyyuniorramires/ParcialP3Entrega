@@ -1,16 +1,30 @@
-﻿using ParcialP3Entrega.Models.ViewModels;
+﻿using ParcialP3Entrega.Filters;
+using ParcialP3Entrega.Metodos;
+using ParcialP3Entrega.Models.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace ParcialP3Entrega.Controllers
 {
     public class TipoPropiedadController : Controller
     {
+        public TipoPropiedadController()
+        {
+            if (System.Web.HttpContext.Current.Session["Usuario"] == null)
+            {
+                System.Web.HttpContext.Current.Response.Redirect("/Home/Index");
+            }
+        }
+
         [HttpGet]
-        public JsonResult ListarTipoPropiedad()
+        public JsonResult ConsultaTipoPropiedad()
         {
             List<TipoPropiedad> _oTP = new List<TipoPropiedad>();
-            _oTP = TipoPropiedad.Instancia.Listar();
+            _oTP = TipoPropiedadMetodo.Instancia.Lista();
             return Json(new { _oTP}, JsonRequestBehavior.AllowGet);
         }
 
@@ -21,39 +35,37 @@ namespace ParcialP3Entrega.Controllers
             bool respuesta = false;
 
             respuesta = (oTP.IdTipoPropiedad == 0)
-                ? TipoPropiedad.Instancia.Registrar(oTP)
-                : TipoPropiedad.Instancia.Modificar(oTP);
+                ? TipoPropiedadMetodo.Instancia.Registrar(oTP)
+                : TipoPropiedadMetodo.Instancia.Modificar(oTP);
             string mensaje = string.Empty;
            
             return Json(new { respuesta = respuesta}, JsonRequestBehavior.AllowGet);
         }
 
-        [HttPost]
+        [HttpPost]
         public bool Eliminar(int id)
         {
             bool respuesta = true;
-            using (SqlConnection cxn = new SqlConnection(cn.db)) 
+            using (SqlConnection cxn = new SqlConnection()) 
             {
                 cxn.Open();
                 try 
                 {
                     SqlCommand cmd = new SqlCommand("sp_EliminarTipoPropiedad", cxn);
-                    cmd.parameters.AddWithValue("@IdTipoPropiedad", id);
-                    cmd.parameters.AddWithValue("Estatus", false);
+                    cmd.Parameters.AddWithValue("@IdTipoPropiedad", id);
+                    cmd.Parameters.AddWithValue("Estatus", false);
 
-                    cmd.parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.commandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
                 }
-                catch (Exception ex) 
+                catch (Exception)
                 {
                     respuesta = false;
                 }
-
             }
-            respuesta = TipoPropiedad.Instancia.Eliminar(id);
-            return Json(new { respuesta = respuesta }, JsonRequestBehavior.AllowGet);
+            respuesta = TipoPropiedadMetodo.Instancia.Eliminar(id);
+            return true;
         }
-
     }
 }
