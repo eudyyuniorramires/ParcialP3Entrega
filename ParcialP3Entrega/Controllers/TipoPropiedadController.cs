@@ -1,30 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using ParcialP3Entrega.Models.ViewModels;
 
 namespace ParcialP3Entrega.Controllers
 {
-    public class HomeController : Controller
+    public class TipoPropiedadController : Controller
     {
-        public ActionResult Index()
+        [HttpGet]
+        public JsonResult ListarTipoPropiedad()
         {
-            return View();
+            List<TipoPropiedad> _oTP = new List<TipoPropiedad>();
+            _oTP = TipoPropiedad.Instancia.Listar();
+            return Json(new { _oTP}, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
 
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }

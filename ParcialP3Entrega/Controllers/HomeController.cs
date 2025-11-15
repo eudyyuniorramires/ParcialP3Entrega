@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace ParcialP3Entrega.Controllers
 {
-    public class HomeController : Controller
+    public class TipoPropiedadController : Controller
     {
         public ActionResult Index()
         {
