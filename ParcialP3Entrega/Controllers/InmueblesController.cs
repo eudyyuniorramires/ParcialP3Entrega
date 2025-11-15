@@ -27,12 +27,12 @@ namespace ParcialP3Entrega.Controllers
         }
 
 
-        //[HttpPost]
-        //public JsonResult Registrar(InmueblesViewModels _obj)
-        //{
-        //    var respuesta = _inmueblesMetodo.Registrar(_obj);
-        //    return Json(new {ok = respuesta });
-        //}
+        [HttpPost]
+        public JsonResult Registrar(InmueblesViewModels _obj)
+        {
+            var respuesta = _inmueblesMetodo.Registrar(_obj);
+            return Json(new {ok = respuesta });
+        }
 
 
         [HttpPost]
