@@ -141,6 +141,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Metodos\CondicionPropiedadMetodo.cs" />
     <Compile Include="Metodos\TipoPropiedadMetodo.cs" />
     <Compile Include="Models\dbmodel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -163,6 +164,7 @@
     <Compile Include="Models\USER.cs">
       <DependentUpon>dbmodel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\CondicionPropiedad.cs" />
     <Compile Include="Models\ViewModels\CondicionViewModels.cs" />
     <Compile Include="Models\ViewModels\InmuebleImagenes.cs" />
     <Compile Include="Models\ViewModels\InmueblesViewModels.cs" />
