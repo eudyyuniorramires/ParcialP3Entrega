@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using static System.Net.WebRequestMethods;
 
 namespace ParcialP3Entrega.Metodos
 {
@@ -22,12 +23,12 @@ namespace ParcialP3Entrega.Metodos
         }
 
 
-        public static TipoPropiedadMetodo Instancia 
+        public static TipoPropiedadMetodo Instancia
         {
-            get 
+            get
             {
 
-                if (_intancia == null) 
+                if (_intancia == null)
                 {
 
                     _intancia = new TipoPropiedadMetodo();
@@ -41,18 +42,18 @@ namespace ParcialP3Entrega.Metodos
 
 
 
-        public List<TipoPropiedad> Lista() 
+        public List<TipoPropiedad> Lista()
         {
 
             List<TipoPropiedad> rptLista = new List<TipoPropiedad>();
 
-            using (SqlConnection cxn = new SqlConnection(cnn.db)) 
+            using (SqlConnection cxn = new SqlConnection(cnn.db))
             {
 
-                using (SqlCommand cmd = new SqlCommand("sp_obtenerTipoPropiedad" , cxn)) 
+                using (SqlCommand cmd = new SqlCommand("sp_obtenerTipoPropiedad", cxn))
                 {
-                
-                
+
+
                     cmd.CommandType = CommandType.StoredProcedure;
 
 
@@ -60,10 +61,10 @@ namespace ParcialP3Entrega.Metodos
                     {
 
                         cxn.Open();
-                        using (SqlDataReader rdr = cmd.ExecuteReader()) 
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
                         {
 
-                            while (rdr.Read()) 
+                            while (rdr.Read())
                             {
 
 
@@ -76,10 +77,10 @@ namespace ParcialP3Entrega.Metodos
 
 
                                 });
-                            
-                            
+
+
                             }
-                        
+
                         }
 
 
@@ -87,32 +88,32 @@ namespace ParcialP3Entrega.Metodos
 
 
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
 
 
                         return null;
 
-                    
+
                     }
 
                 }
-            
+
             }
 
-        
+
         }
 
 
 
 
-        public bool Registrar(TipoPropiedad oTP) 
+        public bool Registrar(TipoPropiedad oTP)
         {
 
             Boolean respuesta = true;
 
 
-            using (SqlConnection cxn = new SqlConnection(cnn.db)) 
+            using (SqlConnection cxn = new SqlConnection(cnn.db))
             {
                 try
                 {
@@ -126,7 +127,7 @@ namespace ParcialP3Entrega.Metodos
                     respuesta = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
 
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     respuesta = false;
                 }
@@ -135,7 +136,78 @@ namespace ParcialP3Entrega.Metodos
             }
 
             return true;
-        
+
         }
+
+
+
+
+        public bool Modificar(TipoPropiedad oTP)
+        {
+
+            bool respuesta = true;
+            using (SqlConnection cxn = new SqlConnection(cnn.db))
+            {
+
+                try
+                {
+
+                    SqlCommand cmd = new SqlCommand("sp_ModificarTipoPropiedad", cxn);
+                    cmd.Parameters.AddWithValue("IdTipoPropiedad", oTP.IdTipoPropiedad);
+                    cmd.Parameters.AddWithValue("Descripcion", oTP.Descripcion);
+                    cmd.Parameters.AddWithValue("Activo", oTP.Activo);
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception ex) 
+                {
+                    respuesta |= false;
+                }
+
+            }
+
+            return respuesta;
+
+        }
+
+
+        public bool Eliminar(int id) 
+        {
+
+            bool respuesta = true;
+            using (SqlConnection cxn = new SqlConnection(cnn.db)) 
+            {
+
+                cxn.Open();
+
+                try
+                {
+
+
+                    SqlCommand cmd = new SqlCommand("sp_ModificarTipoPropiedad", cxn);
+                    cmd.Parameters.AddWithValue("IdTipoPropiedad", id);
+                    cmd.Parameters.AddWithValue("Estatus", false);
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception ex) 
+                {
+                
+                    respuesta |= false;
+
+                }
+
+            
+            }
+
+            return respuesta;
+
+        }
+
+
     }
 }
