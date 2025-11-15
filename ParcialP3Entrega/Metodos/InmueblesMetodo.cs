@@ -42,7 +42,6 @@ namespace PSC08.Metodos
                 }
             }
 
-
             return lista;
         }
 
@@ -95,6 +94,45 @@ namespace PSC08.Metodos
             }
 
             return lista;
+        }
+
+
+        public bool Eliminar(int id)
+        {
+
+            bool respuesta = true;
+            {
+
+
+
+                try
+                {
+                    using (SqlConnection oConection = new SqlConnection(cnn.db))
+                    {
+
+
+                        SqlCommand cmd = new SqlCommand("DELETE FROM CondicionPropiedad WHERE IdCondicion = @ID");
+                        cmd.Parameters.AddWithValue("IdCondion", id);
+                        oConection.Open();
+                        cmd.ExecuteNonQuery();
+
+                        respuesta = true;
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+                    respuesta = false;
+
+                }
+
+                return respuesta;
+
+            }
+
+
         }
 
 
