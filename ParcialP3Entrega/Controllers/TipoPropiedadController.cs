@@ -1,6 +1,10 @@
-﻿using ParcialP3Entrega.Models.ViewModels;
+﻿using ParcialP3Entrega.Clases;
+using ParcialP3Entrega.Metodos;
+using ParcialP3Entrega.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Web.Mvc;
 
 namespace ParcialP3Entrega.Controllers
@@ -41,7 +45,7 @@ namespace ParcialP3Entrega.Controllers
         public bool Eliminar(int id)
         {
             bool respuesta = true;
-            using (SqlConnection cxn = new SqlConnection(cn.db)) 
+            using (SqlConnection cxn = new SqlConnection(cnn.db)) 
             {
                 cxn.Open();
                 try 
