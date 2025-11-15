@@ -51,7 +51,7 @@ namespace ParcialP3Entrega.Controllers
                 }
 
             }
-                respuesta = TipoPropiedad.Instancia.Eliminar(idTP);
+            respuesta = TipoPropiedad.Instancia.Eliminar(id);
             return Json(new { respuesta = respuesta }, JsonRequestBehavior.AllowGet);
         }
 
