@@ -1,4 +1,6 @@
 ﻿using ParcialP3Entrega.Models.ViewModels;
+using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace ParcialP3Entrega.Controllers
 {
