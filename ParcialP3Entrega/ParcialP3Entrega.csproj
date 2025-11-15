@@ -129,6 +129,9 @@
     <Compile Include="Clases\cnn.cs" />
     <Compile Include="Controllers\AccederController.cs" />
     <Compile Include="Controllers\CerrarSessionController.cs" />
+    <Compile Include="Controllers\TipoPropiedadController.cs" />
+    <Compile Include="Controllers\CondicionMetodoController.cs" />
+    <Compile Include="Controllers\InmueblesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\VerificaSession.cs" />
@@ -239,7 +242,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="css\" />
-    <Folder Include="Metodos\" />
     <Folder Include="Views\CerrarSession\" />
     <Folder Include="Views\CondicionPropiedad\" />
     <Folder Include="Views\Condicion\" />
