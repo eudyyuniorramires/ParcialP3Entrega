@@ -142,6 +142,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Metodos\CondicionPropiedadMetodo.cs" />
+    <Compile Include="Metodos\InmueblesMetodo.cs" />
     <Compile Include="Metodos\TipoPropiedadMetodo.cs" />
     <Compile Include="Models\dbmodel.Context.cs">
       <AutoGen>True</AutoGen>
