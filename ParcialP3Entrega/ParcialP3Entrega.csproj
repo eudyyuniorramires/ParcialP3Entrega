@@ -135,6 +135,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Metodos\TipoPropiedadMetodo.cs" />
     <Compile Include="Models\dbmodel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -239,7 +240,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="css\" />
-    <Folder Include="Metodos\" />
     <Folder Include="Views\CerrarSession\" />
     <Folder Include="Views\CondicionPropiedad\" />
     <Folder Include="Views\Condicion\" />
