@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Tipo de Propiedades";
+}
+
+<h2>Tipo de Propiedades</h2>
+
+<button class="btn btn-primary" onclick="abrirModalNuevo()">Nuevo Tipo</button>
+
+<br />
+<br />
+
+<table class="table table-bordered table-striped" id="tablaTP">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Activo</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<!-- MODAL REGISTRO / EDICIÓN -->
+<div id="modalTP" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="tituloModal">Nuevo Tipo</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="idTP" />
+
+                <label>Descripción</label>
+                <input type="text" id="descTP" class="form-control" />
+
+                <label>Activo</label>
+                <input type="checkbox" id="activoTP" />
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="guardar()">Guardar</button>
+                <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+
+    $(document).ready(function () {
+        cargarTabla();
+    });
+
+    function cargarTabla() {
+
+        $.ajax({
+            url: '@Url.Action("ConsultaTipoPropiedad", "TipoPropiedad")',
+            type: 'GET',
+            success: function (data) {
+
+                var lista = data._oTP;
+                var tbody = $("#tablaTP tbody");
+                tbody.empty();
+
+                lista.forEach(item => {
+
+                    var fila = `
+                        <tr>
+                            <td>${item.IdTipoPropiedad}</td>
+                            <td>${item.Descripcion}</td>
+                            <td>${item.Activo ? "Sí" : "No"}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="editar(${item.IdTipoPropiedad}, '${item.Descripcion}', ${item.Activo})">Editar</button>
+                                <button class="btn btn-danger btn-sm" onclick="eliminar(${item.IdTipoPropiedad})">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+
+                    tbody.append(fila);
+                });
+
+            }
+        });
+
+    }
+
+    function abrirModalNuevo() {
+        $("#tituloModal").text("Nuevo Tipo de Propiedad");
+        $("#idTP").val(0);
+        $("#descTP").val("");
+        $("#activoTP").prop("checked", true);
+
+        $("#modalTP").modal("show");
+    }
+
+    function editar(id, descripcion, activo) {
+        $("#tituloModal").text("Editar Tipo de Propiedad");
+        $("#idTP").val(id);
+        $("#descTP").val(descripcion);
+        $("#activoTP").prop("checked", activo);
+
+        $("#modalTP").modal("show");
+    }
+
+    function guardar() {
+
+        var obj = {
+            IdTipoPropiedad: $("#idTP").val(),
+            Descripcion: $("#descTP").val(),
+            Activo: $("#activoTP").prop("checked")
+        };
+
+        $.ajax({
+            url: '@Url.Action("GuardarTipoPropiedad", "TipoPropiedad")',
+            type: 'POST',
+            data: obj,
+            success: function (r) {
+
+                if (r.respuesta) {
+                    alert("Guardado con éxito");
+                    $("#modalTP").modal("hide");
+                    cargarTabla();
+                } else {
+                    alert("Error al guardar");
+                }
+
+            }
+        });
+    }
+
+    function eliminar(id) {
+
+        if (!confirm("¿Desea eliminar este registro?")) return;
+
+        $.ajax({
+            url: '@Url.Action("Eliminar", "TipoPropiedad")',
+            type: 'POST',
+            data: { id: id },
+            success: function (r) {
+                alert("Registro eliminado");
+                cargarTabla();
+            }
+        });
+
+    }
+
+    </script>
+}

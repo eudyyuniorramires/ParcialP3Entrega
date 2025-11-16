@@ -1,0 +1,164 @@
+﻿@model IEnumerable<ParcialP3Entrega.Models.ViewModels.CondicionPropiedad>
+
+@{
+    ViewBag.Title = "Condiciones";
+}
+
+<h2>Condiciones de Propiedad</h2>
+
+<button class="btn btn-primary" onclick="mostrarModalInsertar()">Nueva Condición</button>
+
+<br />
+<br />
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Descripción</th>
+            <th>Activo</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdCondicion</td>
+                <td>@item.Descripcion</td>
+                <td>@(item.Activo ? "Sí" : "No")</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="mostrarModalEditar(@item.IdCondicion, '@item.Descripcion', @item.Activo.ToString().ToLower())">Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminar(@item.IdCondicion)">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal INSERTAR -->
+<div id="modalInsertar" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Nueva Condición</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <label>Descripción</label>
+                <input type="text" id="descInsert" class="form-control" />
+
+                <label>Activo</label>
+                <input type="checkbox" id="activoInsert" />
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="insertar()">Guardar</button>
+                <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal EDITAR -->
+<div id="modalEditar" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Condición</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+                <input type="hidden" id="editId" />
+
+                <label>Descripción</label>
+                <input type="text" id="descEdit" class="form-control" />
+
+                <label>Activo</label>
+                <input type="checkbox" id="activoEdit" />
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" onclick="actualizar()">Actualizar</button>
+                <button class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        function mostrarModalInsertar() {
+            $('#modalInsertar').modal('show');
+        }
+
+        function mostrarModalEditar(id, desc, activo) {
+            $('#editId').val(id);
+            $('#descEdit').val(desc);
+            $('#activoEdit').prop('checked', activo === 'true');
+
+            $('#modalEditar').modal('show');
+        }
+
+        function insertar() {
+
+            var obj = {
+                Descripcion: $('#descInsert').val(),
+                Activo: $('#activoInsert').prop('checked')
+            };
+
+            $.ajax({
+                url: '@Url.Action("Insertar", "CondicionMetodo")',
+                type: 'POST',
+                data: obj,
+                success: function (r) {
+                    if (r.success) {
+                        alert("Guardado con éxito");
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        function actualizar() {
+
+            var obj = {
+                IdCondicion: $('#editId').val(),
+                Descripcion: $('#descEdit').val(),
+                Activo: $('#activoEdit').prop('checked')
+            };
+
+            $.ajax({
+                url: '@Url.Action("Actualizar", "CondicionMetodo")',
+                type: 'POST',
+                data: obj,
+                success: function (r) {
+                    if (r.success) {
+                        alert("Actualizado con éxito");
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        function eliminar(id) {
+            if (!confirm("¿Eliminar registro?")) return;
+
+            $.ajax({
+                url: '@Url.Action("Eliminar", "CondicionMetodo")',
+                type: 'POST',
+                data: { id: id },
+                success: function (r) {
+                    if (r.success) {
+                        alert("Eliminado con éxito");
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+    </script>
+}
