@@ -66,8 +66,6 @@ namespace PSC08.Metodos
                 cmd.Parameters.AddWithValue("@Bathroom", obj.Bathroom);
                 cmd.Parameters.AddWithValue("@Descripcion", obj.Descripcion);
                 cmd.Parameters.AddWithValue("@TipoNegocio", obj.TipoNegocio);
-
-
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
