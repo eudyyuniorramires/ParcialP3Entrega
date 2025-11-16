@@ -1,0 +1,430 @@
+﻿@{
+    ViewBag.Title = "Gestion de Inmuebles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="card shadow">
+    <div class="card-header">
+        <button id="btnNuevo" type="button" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Crear Nuevo
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tablaInmuebles" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                        <th>Tipo</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormulario" tabindex="-1" role="dialog" aria-labelledby="modalFormularioLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFormularioLabel">Detalles del Inmueble</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formInmueble">
+                    <input type="hidden" id="txtIdInmueble" value="0">
+
+                    <div class="form-group">
+                        <label for="cboCiudad">Ciudad</label>
+                        <select id="cboCiudad" class="form-control"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cboTipoPropiedad">Tipo de Propiedad</label>
+                        <select id="cboTipoPropiedad" class="form-control"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cboCondicion">Condición</label>
+                        <select id="cboCondicion" class="form-control"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtDireccion">Dirección</label>
+                        <input type="text" id="txtDireccion" class="form-control" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtPrecio">Precio</label>
+                        <input type="number" id="txtPrecio" class="form-control" autocomplete="off">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnGuardar" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalImagenes" tabindex="-1" role="dialog" aria-labelledby="modalImagenesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalImagenesLabel">Gestionar Imágenes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formImagen" enctype="multipart/form-data">
+                    <input type="hidden" id="txtIdInmuebleImagenes">
+                    <div class="form-group">
+                        <label for="fileImagen">Subir nueva imagen</label>
+                        <input type="file" id="fileImagen" class="form-control-file" accept="image/*">
+                    </div>
+                    <button type="button" id="btnSubirImagen" class="btn btn-success">
+                        <i class="fas fa-upload"></i> Subir
+                    </button>
+                </form>
+                <hr>
+                <h5>Imágenes Actuales</h5>
+                <div id="galeriaImagenes" class="row">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+    var tablaInmuebles;
+
+    // Al cargar el documento
+    $(document).ready(function () {
+
+        // 1. Inicializar la DataTable
+        tablaInmuebles = $('#tablaInmuebles').DataTable({
+            "ajax": {
+                "url": "@Url.Action("Listar", "Inmuebles")", // URL de tu acción
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "IdInmueble" }, // Asegúrate que estos nombres coincidan con tu ViewModel
+                { "data": "Direccion" },
+                { "data": "NombreCiudad" }, // Asumiendo que el ViewModel trae el nombre
+                { "data": "NombreTipoPropiedad" }, // Asumiendo que el ViewModel trae el nombre
+                { "data": "Precio", "render": $.fn.dataTable.render.number(',', '.', 2, '$') }, // Formatear precio
+                {
+                    "data": "IdInmueble",
+                    "render": function (data, type, row) {
+                        return `
+                            <button class='btn btn-info btn-sm btn-editar' data-id='${data}'>
+                                <i class='fas fa-pen'></i>
+                            </button>
+                            <button class='btn btn-danger btn-sm btn-eliminar' data-id='${data}'>
+                                <i class='fas fa-trash'></i>
+                            </button>
+                            <button class='btn btn-warning btn-sm btn-imagenes' data-id='${data}'>
+                                <i class='fas fa-image'></i>
+                            </button>
+                        `;
+                    },
+                    "orderable": false,
+                    "searchable": false,
+                    "width": "120px"
+                }
+            ],
+            "language": { // Opcional: para poner DataTables en español
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
+            }
+        });
+
+        // 2. Cargar los Dropdowns (Select) para el modal
+        cargarDropdowns();
+    });
+
+    // =============================================
+    // FUNCIONES PARA CARGAR DROPDOWNS
+    // =============================================
+    function cargarDropdowns() {
+        // Cargar Ciudades
+        $.ajax({
+            url: "@Url.Action("ListarCiudades", "Inmuebles")",
+            type: "GET",
+            success: function (data) {
+                $("#cboCiudad").empty().append("<option value=''>Seleccione</option>");
+                $.each(data, function (index, item) {
+                    $("#cboCiudad").append(`<option value="${item.Id}">${item.Nombre}</option>`); // Ajusta 'Id' y 'Nombre'
+                });
+            }
+        });
+
+        // Cargar Tipos de Propiedad
+        $.ajax({
+            url: "@Url.Action("ListarTipoPropiedad", "Inmuebles")",
+            type: "GET",
+            success: function (data) {
+                $("#cboTipoPropiedad").empty().append("<option value=''>Seleccione</option>");
+                $.each(data, function (index, item) {
+                    $("#cboTipoPropiedad").append(`<option value="${item.Id}">${item.Nombre}</option>`); // Ajusta 'Id' y 'Nombre'
+                });
+            }
+        });
+
+        // Cargar Condiciones
+        $.ajax({
+            url: "@Url.Action("ListarCondiciones", "Inmuebles")",
+            type: "GET",
+            success: function (data) {
+                $("#cboCondicion").empty().append("<option value=''>Seleccione</option>");
+                $.each(data, function (index, item) {
+                    $("#cboCondicion").append(`<option value="${item.Id}">${item.Nombre}</option>`); // Ajusta 'Id' y 'Nombre'
+                });
+            }
+        });
+    }
+
+    // =============================================
+    // ABRIR MODAL CREAR
+    // =============================================
+    $("#btnNuevo").on("click", function () {
+        limpiarFormulario();
+        $("#modalFormularioLabel").text("Crear Nuevo Inmueble");
+        $("#txtIdInmueble").val("0"); // ID 0 indica que es uno nuevo
+        $("#modalFormulario").modal("show");
+    });
+
+    // =============================================
+    // ABRIR MODAL EDITAR
+    // =============================================
+    $("#tablaInmuebles tbody").on("click", ".btn-editar", function () {
+        var idInmueble = $(this).data("id");
+
+        $.ajax({
+            url: "@Url.Action("ObtenerPorId", "Inmuebles")/" + idInmueble,
+            type: "GET",
+            success: function (data) {
+                if (data.ok === false) {
+                    Swal.fire("Error", data.message, "error");
+                    return;
+                }
+
+                limpiarFormulario();
+                $("#modalFormularioLabel").text("Editar Inmueble");
+
+                // Llenar el formulario con los datos
+                // (Asegúrate que los 'data.nombrePropiedad' coincidan con tu ViewModel)
+                $("#txtIdInmueble").val(data.IdInmueble);
+                $("#cboCiudad").val(data.IdCiudad);
+                $("#cboTipoPropiedad").val(data.IdTipoPropiedad);
+                $("#cboCondicion").val(data.IdCondicion);
+                $("#txtDireccion").val(data.Direccion);
+                $("#txtPrecio").val(data.Precio);
+                // ... llenar los otros campos ...
+
+                $("#modalFormulario").modal("show");
+            },
+            error: function (err) {
+                 Swal.fire("Error", "No se pudo obtener el inmueble.", "error");
+            }
+        });
+    });
+
+    // =============================================
+    // GUARDAR (CREAR O ACTUALIZAR)
+    // =============================================
+    $("#btnGuardar").on("click", function () {
+        // 1. Recolectar datos del formulario
+        var viewModel = {
+            IdInmueble: $("#txtIdInmueble").val(),
+            IdCiudad: $("#cboCiudad").val(),
+            IdTipoPropiedad: $("#cboTipoPropiedad").val(),
+            IdCondicion: $("#cboCondicion").val(),
+            Direccion: $("#txtDireccion").val(),
+            Precio: $("#txtPrecio").val()
+            // ... recolectar los otros campos ...
+        };
+
+        // 2. Determinar si es Crear (Registrar) o Actualizar
+        var esNuevo = viewModel.IdInmueble == "0";
+
+        // --- ¡¡ATENCIÓN!! Tu método 'Registrar' está comentado ---
+        // --- Descoméntalo en el controlador para que esto funcione ---
+        var urlAccion = esNuevo ?
+            "@Url.Action("Registrar", "Inmuebles")" :  // <-- Necesitas descomentar esto en tu Controller
+            "@Url.Action("Actualizar", "Inmuebles")";
+
+        $.ajax({
+            url: urlAccion,
+            type: "POST",
+            data: JSON.stringify(viewModel), // Enviar como JSON
+            contentType: "application/json; charset=utf-t",
+            success: function (data) {
+                if (data.ok) {
+                    tablaInmuebles.ajax.reload(); // Recargar la tabla
+                    $("#modalFormulario").modal("hide");
+                    Swal.fire("¡Éxito!", "Registro guardado correctamente.", "success");
+                } else {
+                    Swal.fire("Error", "No se pudo guardar el registro.", "error");
+                }
+            },
+            error: function(err) {
+                 Swal.fire("Error", "Ocurrió un error en la solicitud.", "error");
+            }
+        });
+    });
+
+    // =============================================
+    // ELIMINAR
+    // =============================================
+    $("#tablaInmuebles tbody").on("click", ".btn-eliminar", function () {
+        var idInmueble = $(this).data("id");
+
+        Swal.fire({
+            title: '¿Está seguro?',
+            text: "¡No podrá revertir esta acción!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "@Url.Action("Eliminar", "Inmuebles")",
+                    type: "POST",
+                    data: { id: idInmueble }, // El 'id' debe coincidir con el parámetro del método
+                    success: function (data) {
+                        if (data.ok) {
+                            tablaInmuebles.ajax.reload();
+                            Swal.fire('¡Eliminado!', 'El registro ha sido eliminado.', 'success');
+                        } else {
+                            Swal.fire("Error", "No se pudo eliminar el registro.", "error");
+                        }
+                    },
+                    error: function(err) {
+                         Swal.fire("Error", "Ocurrió un error en la solicitud.", "error");
+                    }
+                });
+            }
+        });
+    });
+
+    // =============================================
+    // GESTIÓN DE IMÁGENES - ABRIR MODAL
+    // =============================================
+    $("#tablaInmuebles tbody").on("click", ".btn-imagenes", function () {
+        var idInmueble = $(this).data("id");
+        $("#txtIdInmuebleImagenes").val(idInmueble); // Guardar ID en el modal
+
+        cargarImagenes(idInmueble); // Cargar imágenes existentes
+
+        $("#fileImagen").val(null); // Limpiar el input de archivo
+        $("#modalImagenes").modal("show");
+    });
+
+    // =============================================
+    // GESTIÓN DE IMÁGENES - SUBIR
+    // =============================================
+    $("#btnSubirImagen").on("click", function () {
+        var idInmueble = $("#txtIdInmuebleImagenes").val();
+        var fileInput = document.getElementById("fileImagen");
+
+        if (fileInput.files.length === 0) {
+            Swal.fire("Atención", "Debe seleccionar un archivo de imagen.", "warning");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("idInmueble", idInmueble);
+        formData.append("archivo", fileInput.files[0]); // El controlador espera un archivo
+
+        $.ajax({
+            url: "@Url.Action("SubirImagen", "Inmuebles")", // La acción se llama SubirImagen
+            type: "POST",
+            data: formData,
+            processData: false, // Requerido para FormData
+            contentType: false, // Requerido para FormData
+            success: function (data) {
+                if (data.ok) {
+                    Swal.fire("¡Éxito!", "Imagen subida correctamente.", "success");
+                    cargarImagenes(idInmueble); // Recargar la galería
+                    $("#fileImagen").val(null); // Limpiar el input
+                } else {
+                    Swal.fire("Error", data.message || "No se pudo subir la imagen.", "error");
+                }
+            },
+            error: function(err) {
+                 Swal.fire("Error", "Ocurrió un error en la solicitud de subida.", "error");
+            }
+        });
+    });
+
+    // =============================================
+    // FUNCIÓN UTILITARIA: Cargar galería de imágenes
+    // =============================================
+    function cargarImagenes(idInmueble) {
+        var galeria = $("#galeriaImagenes");
+        galeria.empty().html("<p>Cargando...</p>");
+
+        $.ajax({
+            url: "@Url.Action("ListarImagenes", "Inmuebles")",
+            type: "GET",
+            data: { idinmuebles: idInmueble },
+            success: function (lista) {
+                galeria.empty();
+                if (lista.length === 0) {
+                    galeria.html("<p>No hay imágenes para este inmueble.</p>");
+                    return;
+                }
+
+                $.each(lista, function (index, img) {
+                    // Tu controlador ya convierte la imagen a Base64
+                    var imgSrc = "data:image/jpeg;base64," + img.ImagenBase64;
+
+                    var imgHtml = `
+                        <div class="col-md-4 mb-3">
+                            <img src="${imgSrc}" class="img-thumbnail" alt="Imagen ${img.IdFoto}">
+                        </div>
+                    `;
+                    galeria.append(imgHtml);
+                });
+            },
+            error: function(err) {
+                 galeria.empty().html("<p class='text-danger'>Error al cargar imágenes.</p>");
+            }
+        });
+    }
+
+    // =============================================
+    // FUNCIÓN UTILITARIA: Limpiar formulario
+    // =============================================
+    function limpiarFormulario() {
+        $("#formInmueble")[0].reset();
+        $("#txtIdInmueble").val("0");
+        $("#cboCiudad").val("");
+        $("#cboTipoPropiedad").val("");
+        $("#cboCondicion").val("");
+    }
+
+    </script>
+}
