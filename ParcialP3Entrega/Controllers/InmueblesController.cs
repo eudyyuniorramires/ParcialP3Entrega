@@ -34,7 +34,6 @@ namespace ParcialP3Entrega.Controllers
         //    return Json(new { ok = respuesta });
         //}
 
-
         [HttpPost]
         public JsonResult Actualizar(InmueblesViewModels _obj)
         {
