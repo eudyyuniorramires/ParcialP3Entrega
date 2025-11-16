@@ -200,18 +200,10 @@ namespace ParcialP3Entrega.Metodos
                 }
                 catch (Exception ex)
                 {
-
                     respuesta = false;
-
                 }
-
                  return respuesta;
-
             }
-
-
         }
-
-
     }
 }
