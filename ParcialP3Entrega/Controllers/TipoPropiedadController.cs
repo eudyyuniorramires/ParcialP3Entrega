@@ -1,11 +1,6 @@
 ﻿
 ﻿using ParcialP3Entrega.Metodos;
 ﻿using ParcialP3Entrega.Clases;
-﻿using ParcialP3Entrega.Clases;
-﻿using ParcialP3Entrega.Clases;
-﻿using ParcialP3Entrega.Clases;
-﻿using ParcialP3Entrega.Clases;
-using ParcialP3Entrega.Metodos;
 using ParcialP3Entrega.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -50,13 +45,14 @@ namespace ParcialP3Entrega.Controllers
         [HttpPost]
         public bool Eliminar(int id)
         {
-
+             bool respuesta = false;
 
             using (SqlConnection cxn = new SqlConnection(cnn.db)) 
-=======
-            using (SqlConnection cxn = new SqlConnection(cnn.db)) 
->>>>>>> 0ee7a87827df00b10d283e31fa251dc1c79bee47
             {
+
+
+             
+
                 cxn.Open();
                 try 
                 {
