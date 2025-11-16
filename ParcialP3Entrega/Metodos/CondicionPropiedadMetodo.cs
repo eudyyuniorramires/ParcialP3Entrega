@@ -197,22 +197,13 @@ namespace ParcialP3Entrega.Metodos
                         respuesta = true;
 
                     }
-
                 }
                 catch (Exception ex)
                 {
-
                     respuesta = false;
-
                 }
-
                  return respuesta;
-
             }
-
-
         }
-
-
     }
 }

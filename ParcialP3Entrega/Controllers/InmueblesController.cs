@@ -27,12 +27,12 @@ namespace ParcialP3Entrega.Controllers
         }
 
 
-        [HttpPost]
-        public JsonResult Registrar(InmueblesViewModels _obj)
-        {
-            var respuesta = _inmueblesMetodo.Registrar(_obj);
-            return Json(new {ok = respuesta });
-        }
+        //[HttpPost]
+        //public JsonResult Registrar(InmueblesViewModels _obj)
+        //{
+        //    var respuesta = _inmueblesMetodo.Insertar(_obj);
+        //    return Json(new { ok = respuesta });
+        //}
 
 
         [HttpPost]
@@ -42,12 +42,12 @@ namespace ParcialP3Entrega.Controllers
             return Json(new { ok = respuesta });
         }
 
-        //[HttpPost]
-        //public JsonResult Eliminar(int id)
-        //{
-        //    var respuesta = _inmueblesMetodo.Eliminar(id);
-        //    return Json(new { ok = respuesta });
-        //}
+        [HttpPost]
+        public JsonResult Eliminar(int id)
+        {
+            var respuesta = _inmueblesMetodo.Eliminar(id);
+            return Json(new { ok = respuesta });
+        }
 
         [HttpGet]
         public JsonResult ListarTipoPropiedad()
